@@ -29,13 +29,13 @@ def isPossible(vals, n):
         idx -= 1
     return False
     
-# Greedy + Brute-Force
+# Greedy + Brute-Force ~(TC > nlogn)
 def findMinNewValReqToAdded(vals, target):
-    vals.sort()
+    vals.sort()    # nlogn
     min_additions = 0
     num_to_added = []
     
-    for num in range(1, target + 1):
+    for num in range(1, target + 1):    # n * logn
         if not isPossible(vals, num):
             bisect.insort(vals, num)
             num_to_added.append(num)
@@ -44,19 +44,34 @@ def findMinNewValReqToAdded(vals, target):
     # print(num_to_added)
     return min_additions
 
-# Pattern finding (binary nums)
-def optimal(vals, t):
-    nums_l = sorted(vals)
-    
-    s = 1
-    min_addition = 0
-    while s <= t:
-        if not isPossible(nums_l, s):
-            bisect.insort(nums_l, s)
-            min_addition += 1
-        s *= 2
+# Prefix sum (O(nlogn))
+def optimal(nums, target):
+    nums.sort()
         
-    return min_addition
+    n = len(nums)
+    obtainable_uptill = 0
+    req_additions = 0
+    idx = 0
+    
+    while idx < n and obtainable_uptill < target:
+        unobtainable_coin = obtainable_uptill + 1
+        
+        # unobtainable_coin == nums[idx] is handle after while
+        while unobtainable_coin < nums[idx]:
+            # use the largest possible val (obtain + 1) as it doubles the obtainable range
+            obtainable_uptill += unobtainable_coin
+            unobtainable_coin = obtainable_uptill + 1
+            req_additions += 1
+            
+        # now nums[idx] is in obtainable range, but with this num it increases our range
+        obtainable_uptill += nums[idx]
+        idx += 1
+            
+    while obtainable_uptill < target:
+        obtainable_uptill += (obtainable_uptill + 1)
+        req_additions += 1
+            
+    return req_additions
     
 c = [1,4,10]
 t = 19   
