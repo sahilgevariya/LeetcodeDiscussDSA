@@ -1,3 +1,5 @@
+# Leetcode : https://leetcode.com/problems/minimum-number-of-coins-to-be-added/
+
 '''
 - c is an array of positive integers and t is a positive integer representing our target.
 - We want to use c to generate all the integers from 1 to t by picking any number of integers from c and add them.
